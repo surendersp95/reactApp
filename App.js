@@ -1,42 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './style.css';
-import axios from 'axios';
 
 export default function App() {
-  function onSubmit(e) {
-    e.preventDefault();
-    console.log(e);
-    if (name.length > 0 && age.length > 0 && degree.length > 0) {
-      alert('Addedd Successfully');
-    } else {
-      alert('Not Addedd');
+  const url = 'https://dummy.restapiexample.com/api/v1/create';
+
+  const postData = async () => {
+    try {
+      const dataToSend = { name, age, degree };
+      console.log('Data to send:', dataToSend);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        alert('Added Successfully');
+      } else {
+        alert('Not Added');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while adding data.');
     }
-  }
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (name.length > 0 && age.length > 0 && degree.length > 0) {
+      postData();
+    } else {
+      alert('Please fill in all fields.');
+    }
+  };
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [degree, setDegree] = useState('');
 
-  const postData = () => {
-    const result = {
-      name: { name },
-      age: { age },
-      degree: { degree },
-    };
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(postData),
-  });
-
-
   return (
     <div>
       <form>
-        <label for="name">Name</label>
+        <label htmlFor="name">Name</label>
         <input
           type="text"
           id="name"
@@ -44,7 +53,7 @@ export default function App() {
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter Name"
         />
-        <label for="age">Age</label>
+        <label htmlFor="age">Age</label>
         <input
           type="text"
           id="age"
@@ -58,7 +67,7 @@ export default function App() {
           <option>ME</option>
           <option>PHD</option>
         </select>
-        <button onClick={onSubmit}>submit</button>
+        <button onClick={onSubmit}>Submit</button>
       </form>
     </div>
   );
